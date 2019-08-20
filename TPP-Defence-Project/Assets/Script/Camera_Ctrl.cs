@@ -9,10 +9,10 @@ public class Camera_Ctrl : MonoBehaviour
 
     void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player");
-
+        //transform.position = new Vector3(140f, 10f, 145f);
         transform.rotation = Quaternion.Euler(70f, 140f, 0f);
 
+        player = GameObject.FindGameObjectWithTag("Player");
         camera_distance = transform.position - player.transform.position;
     }
 
