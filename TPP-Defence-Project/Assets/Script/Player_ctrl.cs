@@ -10,9 +10,9 @@ public class Player_ctrl : MonoBehaviour
     private Animator anim;
     private RaycastHit hit;
     private Vector3 target_pos;
-    private Coroutine attack_Loop;
 
     [SerializeField] private GameObject target_check;
+    [SerializeField] private GameObject onePoint_hit;
     public bool attack_state { get; private set; }
 
     // Player_ctrl의 변수 초기화
@@ -20,6 +20,9 @@ public class Player_ctrl : MonoBehaviour
     {
         target_check = Instantiate(target_check);
         target_check.SetActive(false);
+
+        onePoint_hit = Instantiate(onePoint_hit);
+        onePoint_hit.SetActive(false);
 
         attack_state = false;
     }
@@ -34,7 +37,7 @@ public class Player_ctrl : MonoBehaviour
     }
 
     // 매 프레임마다 호출
-    void FixedUpdate()
+    void Update()
     {
         if (target_check.GetComponent<Target_check>().enemy_check == true)
         {
@@ -47,27 +50,21 @@ public class Player_ctrl : MonoBehaviour
 
         if (Input.GetMouseButtonDown(1))
         {
-            // 적 오브젝트가 있는 지 확인
-            target_check.SetActive(true);
-            Physics.Raycast(main_camera.ScreenPointToRay(Input.mousePosition), out hit, 100);
-            target_check.transform.position = new Vector3(hit.point.x, 0f, hit.point.z);
-
+            Debug.Log("Hit");
             //플레이어 이동
             Player_move();
+
+            // 적 오브젝트가 있는 지 확인
+            target_check.SetActive(true);
+            target_check.transform.position = new Vector3(hit.point.x, 0f, hit.point.z);
         }
     }
 
     // 플레이어 이동 함수
     void Player_move()
     {
-        // 이동 시작 시 공격 중지
-        if (attack_state == true)
-        {
-            StopCoroutine(attack_Loop);
-        }
-        attack_state = false;
-
         anim.SetInteger("motion", 1);
+        Physics.Raycast(main_camera.ScreenPointToRay(Input.mousePosition), out hit, 100);
         target_pos = hit.point;
         agent.SetDestination(target_pos);
     }
@@ -75,6 +72,13 @@ public class Player_ctrl : MonoBehaviour
     // 플레이어 정지 함수
     void Player_stop()
     {
+        // 적이 없으면 공격 중지
+        if (attack_state == true)
+        {
+
+        }
+        attack_state = false;
+
         // 목적지에 도달시 정지 모션
         float target_distance = Vector3.Distance(transform.position, target_pos);
         if (target_distance < 0.5f)
@@ -87,22 +91,20 @@ public class Player_ctrl : MonoBehaviour
     void Player_attack()
     {
         //적 위치에 맞게 다시 목적지 설정
-        agent.SetDestination(target_check.GetComponent<Target_check>().Enemy_pos + (-transform.forward.normalized * 1.5f)); // 사정거리
+        agent.SetDestination(target_check.GetComponent<Target_check>().Enemy_pos);
+
+        // 적 크기에 맞게 사정거리 계산
+        RaycastHit Enemy_hit;
+        Physics.Raycast(transform.position, transform.forward, out Enemy_hit, 100);
+        Vector3 fixed_Enemy_pos = Enemy_hit.point;
 
         // 사정거리에 도달 시 공격 시작
-        float Enemy_distance = Vector3.Distance(transform.position, target_check.GetComponent<Target_check>().Enemy_pos);
-        if (Enemy_distance < 3f)
+        float Enemy_distance = Vector3.Distance(transform.position, fixed_Enemy_pos);
+        if (Enemy_distance < 1.2f)
         {
+            agent.velocity = Vector3.zero;
             attack_state = true;
             anim.SetInteger("motion", 2);
-            attack_Loop = StartCoroutine(Create_hit());
         }
-    }
-
-    // 공격 오브젝트 생성 함수
-    IEnumerator Create_hit()
-    {
-        Debug.Log("attack");
-        yield return new WaitForSeconds(1f);
     }
 }

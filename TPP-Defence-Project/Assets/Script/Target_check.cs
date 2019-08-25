@@ -12,7 +12,7 @@ public class Target_check : MonoBehaviour
         enemy_check = false;
     }
 
-    private void OnTriggerStay(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Enemy")
         {
