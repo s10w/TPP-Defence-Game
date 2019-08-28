@@ -13,6 +13,7 @@ public class Player_ctrl : MonoBehaviour
 
     [SerializeField] private GameObject target_check;
     [SerializeField] private GameObject onePoint_hit;
+    public bool move_state { get; private set; }
     public bool attack_state { get; private set; }
 
     // Player_ctrl의 변수 초기화
@@ -24,10 +25,10 @@ public class Player_ctrl : MonoBehaviour
         onePoint_hit = Instantiate(onePoint_hit);
         onePoint_hit.SetActive(false);
 
+        move_state = false;
         attack_state = false;
     }
 
-    // 시작 시 오브젝트 설정 함수
     private void Start()
     {
         main_camera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
@@ -36,41 +37,32 @@ public class Player_ctrl : MonoBehaviour
         Player_ctrl_init();
     }
 
-    // 매 프레임마다 호출
     void Update()
     {
+        if (Input.GetMouseButtonDown(1))
+        {
+            // 적 오브젝트가 있는 지 확인
+            target_check.SetActive(true);
+            Physics.Raycast(main_camera.ScreenPointToRay(Input.mousePosition), out hit, 100);
+            target_pos = hit.point;
+            target_check.transform.position = target_pos;
+
+            //이동 준비
+            move_state = true;
+        }
+
         if (target_check.GetComponent<Target_check>().enemy_check == true)
         {
             Player_attack();
         }
         else
         {
-            Player_stop();
-        }
-
-        if (Input.GetMouseButtonDown(1))
-        {
-            Debug.Log("Hit");
-            //플레이어 이동
             Player_move();
-
-            // 적 오브젝트가 있는 지 확인
-            target_check.SetActive(true);
-            target_check.transform.position = new Vector3(hit.point.x, 0f, hit.point.z);
         }
     }
 
     // 플레이어 이동 함수
     void Player_move()
-    {
-        anim.SetInteger("motion", 1);
-        Physics.Raycast(main_camera.ScreenPointToRay(Input.mousePosition), out hit, 100);
-        target_pos = hit.point;
-        agent.SetDestination(target_pos);
-    }
-
-    // 플레이어 정지 함수
-    void Player_stop()
     {
         // 적이 없으면 공격 중지
         if (attack_state == true)
@@ -79,10 +71,18 @@ public class Player_ctrl : MonoBehaviour
         }
         attack_state = false;
 
+        //플레이어 이동 및 모션
+        if (move_state == true)
+        {
+            anim.SetInteger("motion", 1);
+            agent.SetDestination(target_pos);
+        }
+
         // 목적지에 도달시 정지 모션
         float target_distance = Vector3.Distance(transform.position, target_pos);
         if (target_distance < 0.5f)
         {
+            move_state = false;
             anim.SetInteger("motion", 0);
         }
     }
