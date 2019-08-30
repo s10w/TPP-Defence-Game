@@ -2,24 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
 public class Camera_Ctrl : MonoBehaviour
 {
     private float distance = 15.0f;
     private float current_x = 135.0f;
     private float current_y = 70.0f;
     private float edge_size = 30f;
-
+    private float DISTANCE_MIN = 3.0f;
+    private float DISTANCE_MAX = 18.0f;
 
     private bool camera_ctrl_state = false;
-
     private GameObject player;
-
     private Transform cam;
-
-
-
-
 
     void Start()
     {
@@ -29,18 +23,20 @@ public class Camera_Ctrl : MonoBehaviour
 
     void LateUpdate()
     {
-        
+
         if (Input.GetKeyDown(KeyCode.Space))
         {
             camera_ctrl_state = false;
         }
-        if (current_x == 140.0f && current_y == 70.0f){
+        if (current_x == 135.0f && current_y == 70.0f)
+        {
             if (Input.mousePosition.y > Screen.height - edge_size || Input.mousePosition.y < edge_size ||
                 Input.mousePosition.x > Screen.width - edge_size || Input.mousePosition.x < edge_size)
             {
                 camera_ctrl_state = true;
             }
         }
+
         if (camera_ctrl_state == true)
         {
             Cam_ctrl();
@@ -78,7 +74,13 @@ public class Camera_Ctrl : MonoBehaviour
             campos.x += movement * Time.deltaTime;
             campos.z += movement * Time.deltaTime;
         }
+        campos.y -= Input.GetAxis("Mouse ScrollWheel") * 150f * Time.deltaTime;
 
+
+        campos.y = Mathf.Clamp(campos.y, 5, 25);
+        campos.x = Mathf.Clamp(campos.x, 10, 190);
+        campos.z = Mathf.Clamp(campos.z, 10, 190);
+        distance = Mathf.Clamp(distance, DISTANCE_MIN, DISTANCE_MAX);
         cam.position = campos;
 
     }
@@ -88,7 +90,14 @@ public class Camera_Ctrl : MonoBehaviour
         float Y_ANGLE_MAX = 80.0f;
         float DISTANCE_MIN = 3.0f;
         float DISTANCE_MAX = 18.0f;
+        // 카메라 위치 초기화
+        if (Input.GetKeyDown(KeyCode.Space))
 
+        {
+            current_x = 135.0f;
+            current_y = 70.0f;
+            distance = 15.0f;
+        }
         // 카메라 좌우회전
         if (Input.GetMouseButton(2))
         {
@@ -105,16 +114,7 @@ public class Camera_Ctrl : MonoBehaviour
         cam.LookAt(player.transform.position + player.transform.up * 2);
 
         // 카메라 상하
-
-        distance -= Input.GetAxis("Mouse ScrollWheel") * 100f * Time.deltaTime;
+        distance -= Input.GetAxis("Mouse ScrollWheel") * 150f * Time.deltaTime;
         distance = Mathf.Clamp(distance, DISTANCE_MIN, DISTANCE_MAX);
-
-        // 카메라 위치 초기화
-        if (Input.GetKeyUp(KeyCode.Space))
-        {
-            current_x = 140.0f;
-            current_y = 70.0f;
-            distance = 15.0f;
-        }
     }
 }
