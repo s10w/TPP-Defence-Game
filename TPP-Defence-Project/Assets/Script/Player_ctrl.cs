@@ -47,7 +47,7 @@ public class Player_ctrl : MonoBehaviour
             target_check.SetActive(true);
             Physics.Raycast(main_camera.ScreenPointToRay(Input.mousePosition), out hit, 100);
             target_pos = hit.point;
-            target_check.transform.position = new Vector3(target_pos.x, 0f, target_pos.z);
+            target_check.transform.position = target_pos;
 
             //이동 준비
             move_state = true;
