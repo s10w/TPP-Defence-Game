@@ -12,9 +12,8 @@ public class Player_ctrl : MonoBehaviour
     private Vector3 target_pos;
 
     [SerializeField] private GameObject target_check;
-    [SerializeField] private GameObject onePoint_hit;
+    [SerializeField] private GameObject basic_attack;
     public bool move_state { get; private set; }
-    public bool attack_state { get; private set; }
 
     // Player_ctrl의 변수 초기화
     void Player_ctrl_init()
@@ -22,11 +21,10 @@ public class Player_ctrl : MonoBehaviour
         target_check = Instantiate(target_check);
         target_check.SetActive(false);
 
-        onePoint_hit = Instantiate(onePoint_hit);
-        onePoint_hit.SetActive(false);
+        basic_attack = Instantiate(basic_attack);
+        basic_attack.SetActive(false);
 
         move_state = false;
-        attack_state = false;
     }
 
     // 시작 시 오브젝트 설정 함수
@@ -66,13 +64,6 @@ public class Player_ctrl : MonoBehaviour
     // 플레이어 이동 함수
     void Player_move()
     {
-        // 적이 없으면 공격 중지
-        if (attack_state == true)
-        {
-
-        }
-        attack_state = false;
-
         if (move_state == true)
         {
             anim.SetInteger("motion", 1);
@@ -105,8 +96,14 @@ public class Player_ctrl : MonoBehaviour
         {
             transform.LookAt(new Vector3(target_check.GetComponent<Target_check>().Enemy_pos.x, 0f, target_check.GetComponent<Target_check>().Enemy_pos.z));
             agent.velocity = Vector3.zero;
-            attack_state = true;
             anim.SetInteger("motion", 2);
         }
+    }
+
+    void Create_basic_attack()
+    {
+        Debug.Log("Attack");
+        basic_attack.SetActive(true);
+        basic_attack.transform.position = target_check.GetComponent<Target_check>().Enemy_pos;
     }
 }

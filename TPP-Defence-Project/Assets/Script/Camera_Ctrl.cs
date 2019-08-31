@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Camera_Ctrl : MonoBehaviour
 {
-    private float distance = 15.0f;
+    private float distance = 13.0f;
     private float current_x = 135.0f;
     private float current_y = 70.0f;
     private float edge_size = 30f;
