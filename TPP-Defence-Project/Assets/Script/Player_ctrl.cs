@@ -17,6 +17,7 @@ public class Player_ctrl : MonoBehaviour
     public bool move_state { get; private set; }
     public float attack_sight { get; private set; }
     public float attack_range { get; private set; }
+    public float attack_speed { get; private set; }
 
     // Player_ctrl의 변수 초기화
     void Player_ctrl_init()
@@ -30,6 +31,7 @@ public class Player_ctrl : MonoBehaviour
         move_state = false;
         attack_sight = 2f;
         attack_range = 1.2f;
+        attack_speed = 1.0f;
     }
 
     // 시작 시 오브젝트 설정 함수
@@ -56,6 +58,7 @@ public class Player_ctrl : MonoBehaviour
             move_state = true;
         }
 
+        Debug.Log(target_check.GetComponent<Target_check>().enemy_check);
         if (target_check.GetComponent<Target_check>().enemy_check == true)
         {
             Player_attack();
@@ -81,6 +84,7 @@ public class Player_ctrl : MonoBehaviour
         {
             anim.SetInteger("motion", 0);
             move_state = false;
+            agent.velocity = Vector3.zero;
         }
     }
 
@@ -89,6 +93,7 @@ public class Player_ctrl : MonoBehaviour
     {
         //적 위치에 맞게 다시 목적지 설정
         anim.SetInteger("motion", 1);
+        //target_check.transform.position = target_check.GetComponent<Target_check>().Enemy_pos;
         agent.SetDestination(target_check.GetComponent<Target_check>().Enemy_pos);
 
         // 공격 사정거리로 진입
@@ -104,6 +109,7 @@ public class Player_ctrl : MonoBehaviour
             Enemy_distance = Vector3.Distance(transform.position, fixed_Enemy_pos);
             if (Enemy_distance < attack_range)
             {
+                anim.SetFloat("anim_speed", attack_speed);
                 anim.SetInteger("motion", 2);
                 agent.velocity = Vector3.zero;
                 transform.LookAt(new Vector3(target_check.GetComponent<Target_check>().Enemy_pos.x, 0f, target_check.GetComponent<Target_check>().Enemy_pos.z));
@@ -113,7 +119,6 @@ public class Player_ctrl : MonoBehaviour
 
     void Create_basic_attack()
     {
-        Debug.Log("Attack");
         basic_attack.SetActive(true);
         basic_attack.transform.position = target_check.GetComponent<Target_check>().Enemy_pos;
     }
