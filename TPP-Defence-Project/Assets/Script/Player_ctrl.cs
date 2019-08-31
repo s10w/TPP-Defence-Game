@@ -13,7 +13,10 @@ public class Player_ctrl : MonoBehaviour
 
     [SerializeField] private GameObject target_check;
     [SerializeField] private GameObject basic_attack;
+
     public bool move_state { get; private set; }
+    public float attack_sight { get; private set; }
+    public float attack_range { get; private set; }
 
     // Player_ctrl의 변수 초기화
     void Player_ctrl_init()
@@ -25,6 +28,8 @@ public class Player_ctrl : MonoBehaviour
         basic_attack.SetActive(false);
 
         move_state = false;
+        attack_sight = 2f;
+        attack_range = 1.2f;
     }
 
     // 시작 시 오브젝트 설정 함수
@@ -83,20 +88,26 @@ public class Player_ctrl : MonoBehaviour
     void Player_attack()
     {
         //적 위치에 맞게 다시 목적지 설정
+        anim.SetInteger("motion", 1);
         agent.SetDestination(target_check.GetComponent<Target_check>().Enemy_pos);
 
-        // 적 크기에 맞게 사정거리 계산
-        RaycastHit Enemy_hit;
-        Physics.Raycast(transform.position, transform.forward, out Enemy_hit, 100);
-        Vector3 fixed_Enemy_pos = Enemy_hit.point;
-
-        // 사정거리에 도달 시 공격 시작
-        float Enemy_distance = Vector3.Distance(transform.position, fixed_Enemy_pos);
-        if (Enemy_distance < 1.2f)
+        // 공격 사정거리로 진입
+        float Enemy_distance = Vector3.Distance(transform.position, target_check.GetComponent<Target_check>().Enemy_pos);
+        if (Enemy_distance < attack_sight)
         {
-            transform.LookAt(new Vector3(target_check.GetComponent<Target_check>().Enemy_pos.x, 0f, target_check.GetComponent<Target_check>().Enemy_pos.z));
-            agent.velocity = Vector3.zero;
-            anim.SetInteger("motion", 2);
+            // 적 크기에 맞게 공격 위치 설정
+            RaycastHit Enemy_hit;
+            Physics.Raycast(transform.position, transform.forward, out Enemy_hit, 100);
+            Vector3 fixed_Enemy_pos = Enemy_hit.point;
+
+            // 사정거리에 도달 시 공격 시작
+            Enemy_distance = Vector3.Distance(transform.position, fixed_Enemy_pos);
+            if (Enemy_distance < attack_range)
+            {
+                anim.SetInteger("motion", 2);
+                agent.velocity = Vector3.zero;
+                transform.LookAt(new Vector3(target_check.GetComponent<Target_check>().Enemy_pos.x, 0f, target_check.GetComponent<Target_check>().Enemy_pos.z));
+            }
         }
     }
 
