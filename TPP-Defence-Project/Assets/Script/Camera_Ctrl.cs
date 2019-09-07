@@ -5,7 +5,7 @@ using UnityEngine;
 public class Camera_Ctrl : MonoBehaviour
 {
     private float time = 0.0f;
-    private float checkTime = 1.0f;
+    private float checkTime = 1.2f;
     private float current_x = 135.0f;
     private float current_y = 70.0f;
     private float edge_size = 30f;

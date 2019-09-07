@@ -1002,8 +1002,8 @@ GameObject:
   - component: {fileID: 2135822650171439497}
   - component: {fileID: 2464683147575745891}
   - component: {fileID: 2719670611055131853}
-  - component: {fileID: 7400643469283838070}
   - component: {fileID: 3684063986551573200}
+  - component: {fileID: 7400643469283838070}
   - component: {fileID: 303826668097317302}
   - component: {fileID: 130180222440297755}
   m_Layer: 0
@@ -1062,6 +1062,20 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 14
   m_Mesh: {fileID: 0}
+--- !u!136 &3684063986551573200
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4753463118983781610}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.3
+  m_Height: 0.5
+  m_Direction: 1
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!54 &7400643469283838070
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1078,20 +1092,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
---- !u!136 &3684063986551573200
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4753463118983781610}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.3
-  m_Height: 0.5
-  m_Direction: 1
-  m_Center: {x: 0, y: 1, z: 0}
 --- !u!195 &303826668097317302
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -1128,8 +1128,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target_check: {fileID: 8524507755309035534, guid: d7408065e535cad4e995ee7d6b11c5c0,
     type: 3}
-  onePoint_hit: {fileID: 3357817956677038155, guid: d874f8f3b22c99c4184b12e93e96bb47,
-    type: 3}
+  basic_attack: {fileID: 0}
 --- !u!1 &4888881543920958974
 GameObject:
   m_ObjectHideFlags: 0
