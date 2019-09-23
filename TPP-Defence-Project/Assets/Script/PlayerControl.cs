@@ -5,21 +5,34 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerMove))]
 public class PlayerControl : MonoBehaviour
 {
-    public LayerMask move_mask;
-    public GameObject target_check;
+    #region Singleton
+
+    public static PlayerControl instance;
+    private void Awake()
+    {
+        instance = this;
+    }
+    #endregion
+
+    public LayerMask move_mask; // Grond Layer
+    public GameObject move_point; // 목적지 표시 오브젝트
 
     Camera cam;
     RaycastHit hit;
-    PlayerMove move;
-    public TargetObject focus;
+    PlayerMove move; // PlayerMove 객체
+    public InteractObject focus; // InteractObject 객체
+
+    public bool attack_state { get; private set; }
+    public bool pickup_state { get; private set; }
 
     void Start()
     {
         cam = Camera.main;
         move = GetComponent<PlayerMove>();
 
-        target_check = Instantiate(target_check);
-        target_check.SetActive(false);
+        move_point = Instantiate(move_point);
+        move_point.SetActive(false);
+        attack_state = false;
     }
 
     void Update()
@@ -34,34 +47,57 @@ public class PlayerControl : MonoBehaviour
             {
                 RemoveFocus();
             }
-            // ray가 TargetObject에 닿았을 때
+            // ray가 InteractObject에 닿았을 때
             if (Physics.Raycast(ray, out hit, 100))
             {
-                TargetObject object_check = hit.collider.GetComponent<TargetObject>();
-                if (object_check != null)
+                InteractObject target = hit.collider.GetComponent<InteractObject>();
+                if (target != null)
                 {
-                    SetFocus(object_check);
+                    SetFocus(target);
                 }
             }
 
-            // 오브젝트에 닿지 않았을 때 기본 이동
+            // ray가 Grond Layer에 닿았을 때 기본 이동
             if (focus == null)
             {
+                attack_state = false;
                 move.MovePoint(hit.point);
             }
-            target_check.SetActive(true);
-            target_check.transform.position = hit.point;
+            CreatPoint();
         }
     }
 
-    void SetFocus(TargetObject current_focus)
+    void CreatPoint()
     {
-        focus = current_focus;
-        move.TargetChase(current_focus);
+        move_point.SetActive(true);
+        move_point.transform.position = hit.point;
+    }
+
+    void SetFocus(InteractObject current_focus)
+    {
+        if (focus != current_focus)
+        {
+            if (focus != null)
+            {
+                focus.DeFocused();
+            }
+            focus = current_focus;
+            current_focus.OnFocused(transform);
+
+            if (current_focus.tag == "Enemy")
+            {
+                attack_state = true;
+            }
+            move.TargetChase(current_focus);
+        }
     }
 
     void RemoveFocus()
     {
+        if (focus != null)
+        {
+            focus.DeFocused();
+        }
         focus = null;
         move.StopChase();
     }

@@ -23,7 +23,21 @@ public class PlayerMove : MonoBehaviour
             anim.SetInteger("motion", 1);
             agent.SetDestination(target.position);
         }
-        StopMotion();
+
+        // navmesh가 계산을 완료한 상태에서 남아있는 거리 <= 도착 거리
+        if ((!agent.pathPending) && (agent.remainingDistance <= agent.stoppingDistance))
+        {
+            //공격 대상이 있는 경우
+            if (PlayerControl.instance.attack_state == true)
+            {
+                anim.SetInteger("motion", 2);
+                FaceTarget();
+            }
+            else
+            {
+                anim.SetInteger("motion", 0);
+            }
+        }
     }
 
     public void MovePoint(Vector3 point)
@@ -32,24 +46,26 @@ public class PlayerMove : MonoBehaviour
         agent.SetDestination(point);
     }
 
-    public void StopMotion()
+    public void TargetChase(InteractObject current_target)
     {
-        // navmesh가 계산을 완료한 상태에서 남아있는 거리 <= 도착 거리
-        if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
-        {
-            anim.SetInteger("motion", 0);
-        }
-    }
-
-    public void TargetChase(TargetObject current_target)
-    {
-        agent.stoppingDistance = current_target.radius * 0.8f;
+        agent.stoppingDistance = current_target.radius * 0.8f; // 타겟과 일정거리 유지
         target = current_target.transform;
     }
 
     public void StopChase()
     {
         agent.stoppingDistance = 0f;
+        agent.updateRotation = true;
         target = null;
+    }
+
+    void FaceTarget()
+    {
+        agent.updateRotation = false;
+
+        // 정지 상태에서 target을 바라봄
+        Vector3 direction = (target.position - transform.position).normalized;
+        Quaternion look_rotation = Quaternion.LookRotation(new Vector3(direction.x, 0f, direction.z));
+        transform.rotation = Quaternion.Slerp(transform.rotation, look_rotation, Time.deltaTime * 10f);
     }
 }

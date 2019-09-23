@@ -358,15 +358,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events:
-      - time: 0.67391306
-        functionName: Create_basic_attack
-        data: 
-        objectReferenceParameter: {fileID: 11500000, guid: 2d3d7fb8c4ffb1543b1bf022fdd7a19c,
-          type: 3}
-        floatParameter: 0
-        intParameter: 0
-        messageOptions: 0
+      events: []
       transformMask:
       - path: 
         weight: 1
