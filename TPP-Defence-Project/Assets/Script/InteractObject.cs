@@ -6,19 +6,16 @@ public class InteractObject : MonoBehaviour
 {
     Transform player;
 
-    public float radius = 3f;
+    [SerializeField] float radius = 3f;
+    public float getRadius() { return radius; }
+
     bool is_focus = false;
     bool interacted = false;
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, radius);
-    }
-
     public virtual void Interact()
     {
-
+        // 이 함수는 재정의 될 것임
+        Debug.Log("Interact : " + gameObject.name);
     }
 
     private void Update()
@@ -28,11 +25,16 @@ public class InteractObject : MonoBehaviour
             float distance = Vector3.Distance(transform.position, player.position);
             if (distance <= radius)
             {
-                Debug.Log("INTERECT");
                 Interact();
                 interacted = true;
             }
         }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, radius);
     }
 
     public void OnFocused(Transform playerTransform)

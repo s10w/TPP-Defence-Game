@@ -48,7 +48,7 @@ public class PlayerMove : MonoBehaviour
 
     public void TargetChase(InteractObject current_target)
     {
-        agent.stoppingDistance = current_target.radius * 0.8f; // 타겟과 일정거리 유지
+        agent.stoppingDistance = current_target.getRadius() * 0.8f; // 타겟과 일정거리 유지
         target = current_target.transform;
     }
 

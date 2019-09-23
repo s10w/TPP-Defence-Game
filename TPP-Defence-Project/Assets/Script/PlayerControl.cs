@@ -14,13 +14,13 @@ public class PlayerControl : MonoBehaviour
     }
     #endregion
 
-    public LayerMask move_mask; // Grond Layer
-    public GameObject move_point; // 목적지 표시 오브젝트
-
+    [SerializeField] LayerMask move_mask; // Grond Layer
+    [SerializeField] GameObject move_point; // 목적지 표시 오브젝트
     Camera cam;
     RaycastHit hit;
+
+    [SerializeField] InteractObject focus; // InteractObject 객체
     PlayerMove move; // PlayerMove 객체
-    public InteractObject focus; // InteractObject 객체
 
     public bool attack_state { get; private set; }
     public bool pickup_state { get; private set; }
