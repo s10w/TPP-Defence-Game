@@ -38,6 +38,10 @@ public class PlayerMove : MonoBehaviour
                 anim.SetInteger("motion", 0);
             }
         }
+        else
+        {
+            agent.updateRotation = true;
+        }
     }
 
     public void MovePoint(Vector3 point)
